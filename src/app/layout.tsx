@@ -2,6 +2,11 @@ import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from "~/components/ui/navigation-menu";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -9,12 +14,30 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
+function TopNav() {
+  return (
+    <NavigationMenu className="flex max-w-full justify-between bg-slate-600 p-4 text-white">
+      <NavigationMenuList>
+        <NavigationMenuItem>Prabhupada Vyasapuja 2024 Book</NavigationMenuItem>
+      </NavigationMenuList>
+      <NavigationMenuList className="gap-2">
+        <NavigationMenuItem>Prabhupada Disciples</NavigationMenuItem>
+        <NavigationMenuItem>Congregation</NavigationMenuItem>
+        <NavigationMenuItem>Youth</NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className={`${GeistSans.variable} flex`}>
+      <body className="mx-auto my-0">
+        <TopNav />
+        {children}
+      </body>
     </html>
   );
 }
