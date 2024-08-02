@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { db } from "~/server/db";
 
 const mockOfferings = [
   {
@@ -47,10 +48,27 @@ const mockData = mockOfferings
   })
   .sort((a, b) => a.name.localeCompare(b.name));
 
-export default function HomePage() {
+export default async function HomePage() {
+  const offerings = (await db.query.offerings.findMany()).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+  console.log(offerings);
   return (
     <main>
       <div className="mx-auto my-0 grid max-w-6xl grid-cols-2">
+        {offerings.map((offering) => (
+          <Card key={offering.id}>
+            <CardHeader>
+              <CardTitle>{offering.name}</CardTitle>
+              <CardDescription>{offering.category}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p key={offering.id} className="line-clamp-1">
+                {offering.offeringText}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
         {mockData.map((data) => (
           <Card key={data.id}>
             <CardHeader>
