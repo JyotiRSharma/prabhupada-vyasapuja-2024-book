@@ -1,90 +1,117 @@
-import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import Image from "next/image";
 import { db } from "~/server/db";
 
 export const dynamic = "force-dynamic";
 
-const mockOfferings = [
-  {
-    name: "Jyoti Ranjan Sharma",
-    offeringText:
-      "Jai Srila Prabhupada Jai Srila Prabhupada Jai Srila Prabhupada Jai Srila Prabhupada Jai Srila Prabhupada Jai Srila Prabhupada",
-    offeringPhoto: "",
-    category: "youth",
-  },
-  {
-    name: "Roshan Panigrahy",
-    offeringText:
-      "Jai Srila Prabhupada for 2024 Vyasapuja Jai Srila Prabhupada for 2024 Vyasapuja Jai Srila Prabhupada for 2024 Vyasapuja Jai Srila Prabhupada for 2024 Vyasapuja Jai Srila Prabhupada for 2024 Vyasapuja",
-    offeringPhoto: "",
-    category: "youth",
-  },
-  {
-    name: "Santosh Krsna Das",
-    offeringText:
-      "Jai Srila Prabhupada for 2024 Vyasapuja by Santosh Jai Srila Prabhupada for 2024 Vyasapuja by Santosh Jai Srila Prabhupada for 2024 Vyasapuja by Santosh Jai Srila Prabhupada for 2024 Vyasapuja by Santosh",
-    offeringPhoto: "",
-    category: "congregation",
-  },
-  {
-    name: "Debasis Lenka",
-    offeringText:
-      "Jai Srila Prabhupada for 2024 Vyasapuja by Debasis Jai Srila Prabhupada for 2024 Vyasapuja by Debasis Jai Srila Prabhupada for 2024 Vyasapuja by Debasis",
-    offeringPhoto: "",
-    category: "congregation",
-  },
-];
+interface IOfferings {
+  id: number;
+  name: string;
+  city: string;
+  category: string;
+  image_url: string | null;
+  offeringText: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
+}
 
-const mockData = mockOfferings
-  .map((data, index) => {
-    return {
-      id: index + 1,
-      ...data,
-    };
-  })
-  .sort((a, b) => a.name.localeCompare(b.name));
+const DisplayOfferingsComponent = ({
+  offerings,
+}: {
+  offerings: IOfferings[];
+}) => {
+  return (
+    <div>
+      {offerings.map((offering) => (
+        <div key={offering.id} className="px-8">
+          <h3 className="text-2xl font-semibold">{offering.name}</h3>
+          <h4 className="pb-2 text-xl font-medium">{offering.category}</h4>
+          {offering.offeringText
+            ?.split(/\s{2,}/)
+            .filter((paragraph) => paragraph.trim() !== "")
+            .map((paragraph, index) => (
+              <div key={index}>
+                <p className="pb-3 text-justify leading-snug">{paragraph}</p>
+              </div>
+            ))}
+          <Image
+            alt="offering rose flower"
+            src={
+              "https://utfs.io/f/2696a0f5-9df0-4918-8c79-0e0bbb0d28cb-d4wrrv.png"
+            }
+            className="mx-auto my-0"
+            height={30}
+            width={60}
+          ></Image>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default async function HomePage() {
   const offerings = (await db.query.offerings.findMany()).sort((a, b) =>
     a.name.localeCompare(b.name),
   );
-  console.log(offerings);
-  return (
-    <main>
-      <div className="mx-auto my-0 grid max-w-6xl grid-cols-2">
-        {offerings.map((offering) => (
-          <Card key={offering.id}>
-            <CardHeader>
-              <CardTitle>{offering.name}</CardTitle>
-              <CardDescription>{offering.category}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p key={offering.id} className="line-clamp-1">
-                {offering.offeringText}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-        {mockData.map((data) => (
-          <Card key={data.id}>
-            <CardHeader>
-              <CardTitle>{data.name}</CardTitle>
-              <CardDescription>{data.category}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p key={data.id} className="line-clamp-1">
-                {data.offeringText}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </main>
+
+  const prabhupadaDisciplesOfferings = offerings.filter(
+    (item) => item.category.toLowerCase() == "prabhupada disciple",
   );
+  const congregationOfferings = offerings.filter(
+    (item) => item.category.toLowerCase() == "congregation",
+  );
+  const youthOfferings = offerings.filter(
+    (item) => item.category.toLowerCase() == "youth",
+  );
+  const kidsOfferings = offerings.filter(
+    (item) => item.category.toLowerCase() == "kids",
+  );
+
+  const itemsToBeRendered = [];
+
+  if (prabhupadaDisciplesOfferings.length) {
+    itemsToBeRendered.push(
+      <div className="mx-auto my-0 grid max-w-4xl">
+        <div className="flex h-screen break-inside-avoid items-center justify-center text-center text-5xl">
+          Prabhupada Disciples
+        </div>
+        <DisplayOfferingsComponent offerings={prabhupadaDisciplesOfferings} />
+      </div>,
+    );
+  }
+
+  if (congregationOfferings.length) {
+    itemsToBeRendered.push(
+      <div className="mx-auto my-0 grid max-w-6xl">
+        <div className="flex h-screen break-inside-avoid items-center justify-center text-center text-5xl">
+          Congregation
+        </div>
+        <DisplayOfferingsComponent offerings={congregationOfferings} />
+      </div>,
+    );
+  }
+
+  console.log({ youthOfferings: youthOfferings.length });
+  if (youthOfferings.length) {
+    itemsToBeRendered.push(
+      <div className="mx-auto my-0 grid max-w-6xl">
+        <div className="flex h-screen break-inside-avoid items-center justify-center text-center text-5xl">
+          Youth
+        </div>
+        <DisplayOfferingsComponent offerings={youthOfferings} />
+      </div>,
+    );
+  }
+
+  if (kidsOfferings.length) {
+    itemsToBeRendered.push(
+      <div className="mx-auto my-0 grid max-w-6xl">
+        <div className="flex h-screen break-inside-avoid items-center justify-center text-center text-5xl">
+          Kids
+        </div>
+        <DisplayOfferingsComponent offerings={kidsOfferings} />
+      </div>,
+    );
+  }
+
+  return <>{itemsToBeRendered.map((item) => item)}</>;
 }
