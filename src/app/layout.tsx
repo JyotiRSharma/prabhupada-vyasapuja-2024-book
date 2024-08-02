@@ -13,7 +13,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} flex`}>
+    <html lang="en" className={`${GeistSans.variable}`}>
       <body className="mx-auto my-0">{children}</body>
     </html>
   );

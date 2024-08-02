@@ -1,7 +1,34 @@
 import Image from "next/image";
 import { db } from "~/server/db";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  openGraph: {
+    images: [
+      {
+        url: "https://utfs.io/f/9f0a7caa-2c83-48af-b0da-575e7daec2cc-kgw41r.png",
+      },
+    ],
+    type: "website",
+    url: "https://prabhupada-vyasapuja-2024-book.vercel.app/",
+    title: "Srila Prabhupada Vyasapuja Offerings 2024",
+    description: "Offerings to Srila Prabhupada by disciples and well wishers.",
+    siteName: "Prabhupada Vyasapuja Offerings 2024 Book",
+  },
+  twitter: {
+    images: [
+      {
+        url: "https://utfs.io/f/9f0a7caa-2c83-48af-b0da-575e7daec2cc-kgw41r.png",
+      },
+    ],
+    creator: "@IskconInc",
+    site: "https://prabhupada-vyasapuja-2024-book.vercel.app/",
+    title: "Srila Prabhupada Vyasapuja Offerings 2024",
+    description: "Offerings to Srila Prabhupada by disciples and well wishers.",
+  },
+};
 
 interface IOfferings {
   id: number;
